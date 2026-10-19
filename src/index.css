@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Cormorant Garamond", Georgia, serif;
+  --font-script: "Pinyon Script", cursive;
+  --color-cream: #fbf4ea;
+  --color-wine: #4a1d2b;
+  --color-rose-deep: #a8445e;
+  --animate-shake: shake 0.4s ease;
+  --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+  }
+  @keyframes pulse-soft {
+    50% { opacity: 0.45; }
+  }
+}
+
+@layer base {
+  /* Chữ số thẳng hàng: Cormorant mặc định dùng số kiểu cổ, "20/10" trông như "2o/1o". */
+  body { @apply bg-cream text-wine antialiased; font-variant-numeric: lining-nums; }
+}
+
+@layer components {
+  .eyebrow { @apply mb-4 font-body text-sm tracking-[0.35em] text-rose-deep uppercase; }
+  /* Kính trong suốt kiểu iOS: vẫn thấy bó hoa phía sau, quầng sáng sau chữ giữ chữ dễ đọc. */
+  .glass {
+    @apply rounded-[2rem] border border-white/70 bg-white/15 p-8 shadow-[0_10px_50px_rgba(74,29,43,0.16)] md:p-12;
+    backdrop-filter: blur(6px) saturate(1.3);
+    text-shadow: 0 0 18px rgb(251 244 234 / 0.95), 0 0 4px rgb(251 244 234 / 0.9);
+  }
+  /* Giấy viết thư. */
+  .paper {
+    @apply rounded-lg p-8 md:p-12;
+    background: linear-gradient(170deg, #fffaf3 0%, #f8eedf 100%);
+    box-shadow: 0 30px 60px rgb(74 29 43 / 0.22), 0 4px 10px rgb(74 29 43 / 0.12);
+    outline: 1px solid rgb(168 68 94 / 0.25);
+    outline-offset: -12px;
+  }
+  .btn {
+    @apply inline-block rounded-full bg-wine px-8 py-3 font-body text-lg tracking-wider text-cream transition-colors
+      hover:bg-rose-deep focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rose-deep;
+    text-shadow: none;
+  }
+
+  /* Phong bì: thân giấy kraft, hai đường chéo của túi thư, nắp tam giác lật mở quanh mép trên. */
+  .envelope {
+    @apply relative block h-44 w-72 rounded-md;
+    background: linear-gradient(160deg, #f4e5cc, #e3cba5);
+    box-shadow: 0 24px 45px rgb(74 29 43 / 0.28), 0 2px 5px rgb(74 29 43 / 0.15);
+    perspective: 800px;
+  }
+  .envelope::before {
+    content: "";
+    @apply absolute inset-0 rounded-md;
+    background:
+      linear-gradient(to top right, transparent 49.6%, rgb(120 80 50 / 0.2) 50%, transparent 50.4%),
+      linear-gradient(to top left, transparent 49.6%, rgb(120 80 50 / 0.2) 50%, transparent 50.4%);
+  }
+  .envelope .flap {
+    @apply absolute inset-x-0 top-0 h-[58%] origin-top;
+    background: linear-gradient(#ecd9bb, #d9bd95);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    filter: drop-shadow(0 2px 2px rgb(74 29 43 / 0.2));
+  }
+  .envelope .seal {
+    @apply absolute top-[58%] left-1/2 grid size-12 -translate-1/2 place-items-center rounded-full font-display text-xs text-cream;
+    background: radial-gradient(circle at 35% 35%, #c45a74, #7c2a40);
+    box-shadow: 0 2px 6px rgb(74 29 43 / 0.4);
+  }
+}
+
+/* Mức đồ họa do Backdrop đặt theo fps: làm mờ là phần tốn nhất, nên hạ nó trước. */
+html[data-quality="1"] .glass { backdrop-filter: blur(3px); }
+html[data-quality="0"] .glass { backdrop-filter: none; background: rgb(251 244 234 / 0.8); }
+html[data-quality="0"] .extra { display: none; }
